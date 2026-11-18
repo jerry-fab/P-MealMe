@@ -1,38 +1,9 @@
 import React from 'react';
 import { LayoutDashboard, Utensils, CirclePlus, X, Store } from 'lucide-react';
 
-export const Sidebar = ({
-  activeTab = 'meals',
-  setActiveTab,
-  mobileOpen,
-  setMobileOpen,
-}) => {
-  const menuItems = [
-    {
-      id: 'dashboard',
-      label: 'Dashboard',
-      icon: LayoutDashboard,
-    },
-    {
-      id: 'meals',
-      label: 'Meal Card',
-      icon: Utensils,
-    },
-    {
-      id: 'create',
-      label: 'Meal Create',
-      icon: CirclePlus,
-    },
-  ];
-
-  const handleItemClick = (id) => {
-    if (setActiveTab) setActiveTab(id);
-    if (setMobileOpen) setMobileOpen(false);
-  };
-
+export const Sidebar = ({ mobileOpen, setMobileOpen }) => {
   return (
     <>
-      {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
@@ -40,13 +11,11 @@ export const Sidebar = ({
         />
       )}
 
-      {/* Sidebar Container matching Meal Mall layout */}
       <aside
         className={`fixed top-0 bottom-0 left-0 z-50 w-64 min-h-screen bg-slate-900 text-white flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Brand Header */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-slate-800">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center shadow-md shadow-orange-500/20">
@@ -62,7 +31,6 @@ export const Sidebar = ({
             </div>
           </div>
 
-          {/* Close for mobile */}
           <button
             onClick={() => setMobileOpen(false)}
             className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg"
@@ -71,36 +39,29 @@ export const Sidebar = ({
           </button>
         </div>
 
-        {/* Navigation Menu (Buttons) */}
         <nav className="flex-1 px-4 py-6">
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 px-3">
             Main Menu
           </p>
 
           <div className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
+              <LayoutDashboard className="w-5 h-5" />
+              <span>Dashboard</span>
+            </button>
 
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleItemClick(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-orange-500 text-white hover:bg-orange-600 shadow-md font-semibold'
-                      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold bg-orange-500 text-white shadow-md hover:bg-orange-600 transition-all">
+              <Utensils className="w-5 h-5" />
+              <span>Meal Card</span>
+            </button>
+
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all">
+              <CirclePlus className="w-5 h-5" />
+              <span>Meal Create</span>
+            </button>
           </div>
         </nav>
 
-        {/* Footer */}
         <div className="p-4 border-t border-slate-800">
           <p className="text-xs text-slate-400 text-center font-medium">
             © 2026 Meal Mall

@@ -14,7 +14,7 @@ export const MealCard = ({ product }) => {
 
   return (
     <article className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
-      
+
       {/* 1. Image Container with Floating Badges */}
       <div className="relative aspect-[4/3] bg-slate-50 overflow-hidden flex items-center justify-center p-4">
         <img
@@ -49,18 +49,17 @@ export const MealCard = ({ product }) => {
             </span>
 
             <span
-              className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${
-                isLowStock
+              className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${isLowStock
                   ? 'bg-amber-50 text-amber-700 border border-amber-200'
                   : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-              }`}
+                }`}
             >
               {isLowStock ? `Low Stock (${product.stock})` : product.availabilityStatus || 'In Stock'}
             </span>
           </div>
 
           {/* Title */}
-          <h3 
+          <h3
             className="font-bold text-slate-900 text-lg leading-snug line-clamp-1 group-hover:text-orange-600 transition-colors"
             title={product.title}
           >
