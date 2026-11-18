@@ -1,206 +1,340 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useRecipes } from './hooks/useRecipes';
-import { Navbar } from './components/Navbar';
-import { RecipeCard } from './components/RecipeCard';
-import { RecipeSkeleton } from './components/RecipeSkeleton';
+import { useGroceries } from './hooks/useGroceries';
+import { Sidebar } from './components/Sidebar';
+import { Topbar } from './components/Topbar';
+import { DashboardView } from './components/DashboardView';
+import { MealCard } from './components/MealCard';
+import { CardSkeleton } from './components/CardSkeleton';
 import { ErrorAlert } from './components/ErrorAlert';
-import { RecipeModal } from './components/RecipeModal';
-import { SavedModal } from './components/SavedModal';
-import { SearchX, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { ProductDetailModal } from './components/ProductDetailModal';
+import { CreateMealModal } from './components/CreateMealModal';
+import { CartModal } from './components/CartModal';
+import { SearchX, Filter, ArrowUpDown } from 'lucide-react';
 
 export function App() {
-  const { recipes, loading, error, refetch } = useRecipes();
-  
-  // Search & Filter State
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCuisine, setSelectedCuisine] = useState('All');
-  const [selectedDifficulty, setSelectedDifficulty] = useState('All');
+  const { products, loading, error, refetch, addProduct } = useGroceries();
 
-  // Modal & Saved State
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
-  const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
-  const [savedRecipes, setSavedRecipes] = useState(() => {
+  // Navigation & UI State
+  const [activeTab, setActiveTab] = useState('meals'); // default to 'meals' as user requested cards!
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Search, Filter & Sort
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState('All');
+  const [sortBy, setSortBy] = useState('default');
+
+  // Modals State
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+
+  // Cart / Saved State with LocalStorage
+  const [cartItems, setCartItems] = useState(() => {
     try {
-      const stored = localStorage.getItem('smartchef_saved_recipes');
+      const stored = localStorage.getItem('meal_mall_cart');
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
     }
   });
 
-  // Sync saved recipes with localStorage
   useEffect(() => {
     try {
-      localStorage.setItem('smartchef_saved_recipes', JSON.stringify(savedRecipes));
+      localStorage.setItem('meal_mall_cart', JSON.stringify(cartItems));
     } catch (e) {
-      console.error('Failed to save to localStorage', e);
+      console.error('Failed to sync cart with localStorage', e);
     }
-  }, [savedRecipes]);
+  }, [cartItems]);
 
-  // Handle Save / Unsave Toggle
-  const handleToggleSave = (recipe) => {
-    setSavedRecipes((prev) => {
-      const exists = prev.some((item) => item.id === recipe.id);
+  // Toggle Cart Item
+  const handleToggleCart = (product) => {
+    setCartItems((prev) => {
+      const exists = prev.some((item) => item.id === product.id);
       if (exists) {
-        return prev.filter((item) => item.id !== recipe.id);
+        return prev.filter((item) => item.id !== product.id);
       } else {
-        return [...prev, recipe];
+        return [...prev, product];
       }
     });
   };
 
-  const handleRemoveSaved = (recipeId) => {
-    setSavedRecipes((prev) => prev.filter((item) => item.id !== recipeId));
+  const handleRemoveFromCart = (productId) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== productId));
   };
 
-  // Extract unique cuisines for the filter pills
-  const availableCuisines = useMemo(() => {
-    if (!recipes.length) return ['All'];
-    const cuisines = new Set(recipes.map((r) => r.cuisine).filter(Boolean));
-    return ['All', ...Array.from(cuisines).slice(0, 8)];
-  }, [recipes]);
-
-  // Filter recipes based on search, cuisine, and difficulty
-  const filteredRecipes = useMemo(() => {
-    return recipes.filter((recipe) => {
-      const matchesSearch =
-        recipe.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.cuisine?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.tags?.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-
-      const matchesCuisine =
-        selectedCuisine === 'All' || recipe.cuisine === selectedCuisine;
-
-      const matchesDifficulty =
-        selectedDifficulty === 'All' ||
-        recipe.difficulty?.toLowerCase() === selectedDifficulty.toLowerCase();
-
-      return matchesSearch && matchesCuisine && matchesDifficulty;
+  // Derive unique tags from products
+  const availableTags = useMemo(() => {
+    const tagsSet = new Set(['All']);
+    products.forEach((p) => {
+      if (p.tags && Array.isArray(p.tags)) {
+        p.tags.forEach((t) => tagsSet.add(t));
+      }
     });
-  }, [recipes, searchQuery, selectedCuisine, selectedDifficulty]);
+    return Array.from(tagsSet);
+  }, [products]);
+
+  // Filtered & Sorted Products
+  const filteredProducts = useMemo(() => {
+    let result = products.filter((product) => {
+      const matchesSearch =
+        product.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.tags?.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      const matchesTag =
+        selectedTag === 'All' ||
+        product.tags?.includes(selectedTag) ||
+        product.category?.toLowerCase() === selectedTag.toLowerCase();
+
+      return matchesSearch && matchesTag;
+    });
+
+    if (sortBy === 'price-low') {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-high') {
+      result.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'rating') {
+      result.sort((a, b) => b.rating - a.rating);
+    }
+
+    return result;
+  }, [products, searchQuery, selectedTag, sortBy]);
+
+  // Dynamic Topbar Title
+  const getHeaderTitle = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return 'Dashboard Overview';
+      case 'meals':
+        return 'Meal Cards & Groceries';
+      case 'saved':
+        return 'Cart & Saved Meals';
+      default:
+        return 'Meal Mall';
+    }
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
+    <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
       
-      {/* 1. Navigation Bar */}
-      <Navbar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        savedCount={savedRecipes.length}
-        onOpenSaved={() => setIsSavedModalOpen(true)}
+      {/* 1. Left Sidebar (Matching Meal Mall design) */}
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        cartCount={cartItems.length}
+        mobileOpen={mobileSidebarOpen}
+        setMobileOpen={setMobileSidebarOpen}
+        onOpenCreateModal={() => setIsCreateModalOpen(true)}
       />
 
-      {/* 2. Main Page Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      {/* 2. Main Content Wrapper */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         
-        {/* Section Heading matching the mockup */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-semibold mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Curated Recipes</span>
+        {/* Top Header Bar */}
+        <Topbar
+          activeTitle={getHeaderTitle()}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          cartCount={cartItems.length}
+          onOpenCart={() => setIsCartModalOpen(true)}
+          onOpenCreate={() => setIsCreateModalOpen(true)}
+          onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+        />
+
+        {/* Scrollable Main Canvas */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          
+          {/* TAB 1: Dashboard View */}
+          {activeTab === 'dashboard' && (
+            <DashboardView
+              products={products}
+              onNavigateToMeals={() => setActiveTab('meals')}
+              onViewDetails={(item) => setSelectedProduct(item)}
+              onToggleCart={handleToggleCart}
+              cartItems={cartItems}
+            />
+          )}
+
+          {/* TAB 2: Meal Card Grid View */}
+          {activeTab === 'meals' && (
+            <div className="space-y-6">
+              
+              {/* Controls Bar: Tag Pills & Sort */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                
+                {/* Category / Tag Pills */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                  {availableTags.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setSelectedTag(tag)}
+                      className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap capitalize transition-all ${
+                        selectedTag === tag
+                          ? 'bg-orange-500 text-white shadow-sm'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Sort Dropdown & Product Count */}
+                <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
+                  <span className="text-xs text-slate-400 font-medium">
+                    Showing <strong className="text-slate-800">{filteredProducts.length}</strong> items
+                  </span>
+
+                  <div className="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-xl text-xs text-slate-700">
+                    <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="bg-transparent font-semibold outline-none cursor-pointer"
+                    >
+                      <option value="default">Default Sort</option>
+                      <option value="price-low">Price: Low to High</option>
+                      <option value="price-high">Price: High to Low</option>
+                      <option value="rating">Highest Rated</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Loading State */}
+              {loading && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, idx) => (
+                    <CardSkeleton key={idx} />
+                  ))}
+                </div>
+              )}
+
+              {/* Error State */}
+              {!loading && error && (
+                <ErrorAlert message={error} onRetry={refetch} />
+              )}
+
+              {/* Empty Search / Filter State */}
+              {!loading && !error && filteredProducts.length === 0 && (
+                <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 max-w-md mx-auto">
+                  <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-orange-600">
+                    <SearchX className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-1">
+                    No grocery items found
+                  </h3>
+                  <p className="text-xs text-slate-500 mb-6">
+                    No items match your filter "{searchQuery || selectedTag}". Try searching for another keyword.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSelectedTag('All');
+                      setSortBy('default');
+                    }}
+                    className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl transition-all shadow-sm"
+                  >
+                    Reset Filters
+                  </button>
+                </div>
+              )}
+
+              {/* Product Card Grid (Responsive: 1 col mobile, 2 tablet, 3 desktop) */}
+              {!loading && !error && filteredProducts.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map((product) => (
+                    <MealCard
+                      key={product.id}
+                      product={product}
+                      onViewDetails={(item) => setSelectedProduct(item)}
+                      onToggleCart={handleToggleCart}
+                      isInCart={cartItems.some((item) => item.id === product.id)}
+                    />
+                  ))}
+                </div>
+              )}
+
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-              Recipe Results
-            </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Explore freshly prepared dishes, ingredients, and cooking steps.
-            </p>
-          </div>
+          )}
 
-          {/* Quick Filters */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-            {availableCuisines.map((cuisine) => (
-              <button
-                key={cuisine}
-                onClick={() => setSelectedCuisine(cuisine)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-                  selectedCuisine === cuisine
-                    ? 'bg-gray-900 text-white shadow-sm'
-                    : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-                }`}
-              >
-                {cuisine}
-              </button>
-            ))}
-          </div>
-        </div>
+          {/* TAB 3: Saved & Cart View */}
+          {activeTab === 'saved' && (
+            <div className="space-y-6 max-w-4xl mx-auto">
+              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900">
+                      Saved & Cart Items ({cartItems.length})
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Manage items bookmarked for meal planning or purchase
+                    </p>
+                  </div>
+                  {cartItems.length > 0 && (
+                    <button
+                      onClick={() => setCartItems([])}
+                      className="text-xs text-rose-500 hover:text-rose-700 font-semibold"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
 
-        {/* 3. States: Loading / Error / Empty / Grid */}
-        {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, idx) => (
-              <RecipeSkeleton key={idx} />
-            ))}
-          </div>
-        )}
-
-        {!loading && error && (
-          <ErrorAlert message={error} onRetry={refetch} />
-        )}
-
-        {!loading && !error && filteredRecipes.length === 0 && (
-          <div className="text-center py-16 bg-white rounded-3xl border border-gray-100 p-8 max-w-lg mx-auto">
-            <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-amber-600">
-              <SearchX className="w-8 h-8" />
+                {cartItems.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-sm font-bold text-slate-700">No items saved yet</p>
+                    <p className="text-xs text-slate-400 mt-1 mb-4">Go to Meal Cards and add items to your cart.</p>
+                    <button
+                      onClick={() => setActiveTab('meals')}
+                      className="px-4 py-2 bg-orange-500 text-white rounded-xl text-xs font-semibold"
+                    >
+                      Browse Groceries
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {cartItems.map((item) => (
+                      <MealCard
+                        key={item.id}
+                        product={item}
+                        onViewDetails={(prod) => setSelectedProduct(prod)}
+                        onToggleCart={handleToggleCart}
+                        isInCart={true}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1">
-              No matching recipes found
-            </h3>
-            <p className="text-sm text-gray-500 mb-6">
-              We couldn't find any recipes matching "{searchQuery}". Try searching for another cuisine or dish name.
-            </p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCuisine('All');
-                setSelectedDifficulty('All');
-              }}
-              className="px-5 py-2.5 bg-amber-400 hover:bg-amber-500 text-gray-900 font-semibold text-sm rounded-full transition-colors shadow-sm"
-            >
-              Clear All Filters
-            </button>
-          </div>
-        )}
+          )}
 
-        {/* 4. Recipe Grid (Responsive: 1 col on mobile, 2 on tablet, 3 on desktop) */}
-        {!loading && !error && filteredRecipes.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {filteredRecipes.map((recipe) => (
-              <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                onView={(item) => setSelectedRecipe(item)}
-                onToggleSave={handleToggleSave}
-                isSaved={savedRecipes.some((item) => item.id === recipe.id)}
-              />
-            ))}
-          </div>
-        )}
+        </main>
 
-      </main>
+      </div>
 
-      {/* 5. Modals */}
-      <RecipeModal
-        recipe={selectedRecipe}
-        onClose={() => setSelectedRecipe(null)}
+      {/* 3. Global Modals */}
+      <ProductDetailModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onToggleCart={handleToggleCart}
+        isInCart={selectedProduct ? cartItems.some((item) => item.id === selectedProduct.id) : false}
       />
 
-      <SavedModal
-        isOpen={isSavedModalOpen}
-        onClose={() => setIsSavedModalOpen(false)}
-        savedRecipes={savedRecipes}
-        onRemoveSaved={handleRemoveSaved}
-        onViewRecipe={(item) => setSelectedRecipe(item)}
+      <CreateMealModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onAddProduct={addProduct}
       />
 
-      {/* 6. Footer */}
-      <footer className="mt-16 border-t border-gray-200/80 bg-white py-8 text-center text-xs text-gray-400">
-        <p className="font-medium text-gray-500">
-          SmartChef Recipe Application · Built with React.js, Axios & Tailwind CSS
-        </p>
-        <p className="mt-1">Powered by DummyJSON Recipes Public API</p>
-      </footer>
+      <CartModal
+        isOpen={isCartModalOpen}
+        onClose={() => setIsCartModalOpen(false)}
+        cartItems={cartItems}
+        onRemoveItem={handleRemoveFromCart}
+        onViewDetails={(item) => setSelectedProduct(item)}
+      />
 
     </div>
   );
