@@ -12,9 +12,8 @@ export const Sidebar = ({ mobileOpen, setMobileOpen }) => {
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 min-h-screen bg-slate-900 text-white flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 ${
-          mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 min-h-screen bg-slate-900 text-white flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="h-20 flex items-center justify-between px-6 border-b border-slate-800">
           <div className="flex items-center gap-3">
