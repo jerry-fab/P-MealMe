@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { Star, Tag, Eye, Bookmark, Check } from 'lucide-react';
+import React from 'react';
+import { Star, Tag, Eye, Bookmark } from 'lucide-react';
 
 /**
  * Reusable MealCard component.
  * Displays image, rating, title, category, price, discount, stock, and action buttons.
  */
-export const MealCard = ({ product, onViewDetails }) => {
-  const [isSaved, setIsSaved] = useState(false);
-
+export const MealCard = ({ product }) => {
   const originalPrice = product.discountPercentage
     ? (product.price / (1 - product.discountPercentage / 100)).toFixed(2)
     : null;
@@ -17,7 +15,7 @@ export const MealCard = ({ product, onViewDetails }) => {
   return (
     <article className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
       
-      {/* 1. Image Container with Badges */}
+      {/* 1. Image Container with Floating Badges */}
       <div className="relative aspect-[4/3] bg-slate-50 overflow-hidden flex items-center justify-center p-4">
         <img
           src={product.thumbnail || product.images?.[0]}
@@ -93,11 +91,10 @@ export const MealCard = ({ product, onViewDetails }) => {
           </div>
         </div>
 
-        {/* 3. Action Buttons */}
+        {/* 3. Action Buttons (Pure UI Buttons) */}
         <div className="flex items-center gap-2.5 mt-5">
           <button
             type="button"
-            onClick={() => onViewDetails(product)}
             className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs py-2.5 px-3 rounded-xl transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-1.5"
           >
             <Eye className="w-3.5 h-3.5" />
@@ -106,24 +103,10 @@ export const MealCard = ({ product, onViewDetails }) => {
 
           <button
             type="button"
-            onClick={() => setIsSaved(!isSaved)}
-            className={`flex-1 border text-xs font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] ${
-              isSaved
-                ? 'bg-orange-50 border-orange-300 text-orange-700'
-                : 'border-slate-200 text-slate-700 hover:bg-slate-50'
-            }`}
+            className="flex-1 border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 active:scale-[0.98]"
           >
-            {isSaved ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-orange-600" />
-                <span>Saved</span>
-              </>
-            ) : (
-              <>
-                <Bookmark className="w-3.5 h-3.5" />
-                <span>Save</span>
-              </>
-            )}
+            <Bookmark className="w-3.5 h-3.5" />
+            <span>Save</span>
           </button>
         </div>
 

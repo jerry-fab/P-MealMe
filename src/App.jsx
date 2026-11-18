@@ -5,17 +5,13 @@ import { Topbar } from './components/Topbar';
 import { MealCard } from './components/MealCard';
 import { CardSkeleton } from './components/CardSkeleton';
 import { ErrorAlert } from './components/ErrorAlert';
-import { ProductDetailModal } from './components/ProductDetailModal';
 
 export function App() {
   const { products, loading, error, refetch } = useGroceries();
 
-  // Navigation & UI State
+  // Navigation & Mobile UI State
   const [activeTab, setActiveTab] = useState('meals');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
-  // Detail Modal State
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
@@ -55,14 +51,13 @@ export function App() {
               <ErrorAlert message={error} onRetry={refetch} />
             )}
 
-            {/* Meal Cards Grid directly rendered (.map() with unique key) */}
+            {/* Meal Cards Grid (.map() iteration with unique key) */}
             {!loading && !error && products.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.map((product) => (
                   <MealCard
                     key={product.id}
                     product={product}
-                    onViewDetails={(item) => setSelectedProduct(item)}
                   />
                 ))}
               </div>
@@ -73,12 +68,6 @@ export function App() {
         </main>
 
       </div>
-
-      {/* Product Detail Modal */}
-      <ProductDetailModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-      />
 
     </div>
   );
