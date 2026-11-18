@@ -1,11 +1,13 @@
-import React from 'react';
-import { Star, ShoppingCart, Check, Tag, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { Star, Tag, Eye, Bookmark, Check } from 'lucide-react';
 
 /**
- * Reusable MealCard / Grocery Product Card component.
- * Displays image, title, category, price, discount, rating, stock status, and action buttons.
+ * Reusable MealCard component.
+ * Displays image, rating, title, category, price, discount, stock, and action buttons.
  */
-export const MealCard = ({ product, onViewDetails, onToggleCart, isInCart }) => {
+export const MealCard = ({ product, onViewDetails }) => {
+  const [isSaved, setIsSaved] = useState(false);
+
   const originalPrice = product.discountPercentage
     ? (product.price / (1 - product.discountPercentage / 100)).toFixed(2)
     : null;
@@ -13,9 +15,9 @@ export const MealCard = ({ product, onViewDetails, onToggleCart, isInCart }) => 
   const isLowStock = product.stock <= 10;
 
   return (
-    <article className="group bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
+    <article className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
       
-      {/* 1. Image Container with Floating Badges */}
+      {/* 1. Image Container with Badges */}
       <div className="relative aspect-[4/3] bg-slate-50 overflow-hidden flex items-center justify-center p-4">
         <img
           src={product.thumbnail || product.images?.[0]}
@@ -72,7 +74,7 @@ export const MealCard = ({ product, onViewDetails, onToggleCart, isInCart }) => 
             {product.description}
           </p>
 
-          {/* Price & Shipping Info */}
+          {/* Price & Delivery Information */}
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-baseline justify-between">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-slate-900">
@@ -96,29 +98,30 @@ export const MealCard = ({ product, onViewDetails, onToggleCart, isInCart }) => 
           <button
             type="button"
             onClick={() => onViewDetails(product)}
-            className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs py-2.5 px-3 rounded-xl transition-all shadow-sm active:scale-[0.98] text-center"
+            className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs py-2.5 px-3 rounded-xl transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-1.5"
           >
-            View Details
+            <Eye className="w-3.5 h-3.5" />
+            <span>View Details</span>
           </button>
 
           <button
             type="button"
-            onClick={() => onToggleCart(product)}
+            onClick={() => setIsSaved(!isSaved)}
             className={`flex-1 border text-xs font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] ${
-              isInCart
+              isSaved
                 ? 'bg-orange-50 border-orange-300 text-orange-700'
                 : 'border-slate-200 text-slate-700 hover:bg-slate-50'
             }`}
           >
-            {isInCart ? (
+            {isSaved ? (
               <>
                 <Check className="w-3.5 h-3.5 text-orange-600" />
-                <span>Added</span>
+                <span>Saved</span>
               </>
             ) : (
               <>
-                <ShoppingCart className="w-3.5 h-3.5" />
-                <span>Add to Cart</span>
+                <Bookmark className="w-3.5 h-3.5" />
+                <span>Save</span>
               </>
             )}
           </button>

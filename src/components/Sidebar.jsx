@@ -1,48 +1,32 @@
 import React from 'react';
-import { LayoutDashboard, Utensils, CirclePlus, ShoppingBag, X, Store } from 'lucide-react';
+import { LayoutDashboard, Utensils, CirclePlus, X, Store } from 'lucide-react';
 
 export const Sidebar = ({
-  activeTab,
+  activeTab = 'meals',
   setActiveTab,
-  cartCount,
   mobileOpen,
   setMobileOpen,
-  onOpenCreateModal,
 }) => {
   const menuItems = [
     {
       id: 'dashboard',
       label: 'Dashboard',
       icon: LayoutDashboard,
-      badge: null,
     },
     {
       id: 'meals',
       label: 'Meal Card',
       icon: Utensils,
-      badge: null,
     },
     {
       id: 'create',
       label: 'Meal Create',
       icon: CirclePlus,
-      action: onOpenCreateModal,
-      badge: 'New',
-    },
-    {
-      id: 'saved',
-      label: 'Saved & Cart',
-      icon: ShoppingBag,
-      badge: cartCount > 0 ? cartCount : null,
     },
   ];
 
-  const handleNavClick = (item) => {
-    if (item.action) {
-      item.action();
-    } else {
-      setActiveTab(item.id);
-    }
+  const handleItemClick = (id) => {
+    if (setActiveTab) setActiveTab(id);
     if (setMobileOpen) setMobileOpen(false);
   };
 
@@ -56,9 +40,9 @@ export const Sidebar = ({
         />
       )}
 
-      {/* Sidebar Container */}
+      {/* Sidebar Container matching Meal Mall layout */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 min-h-screen bg-slate-900 text-white flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -78,7 +62,7 @@ export const Sidebar = ({
             </div>
           </div>
 
-          {/* Close button for mobile */}
+          {/* Close for mobile */}
           <button
             onClick={() => setMobileOpen(false)}
             className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg"
@@ -87,13 +71,13 @@ export const Sidebar = ({
           </button>
         </div>
 
-        {/* Navigation Menu */}
-        <nav className="flex-1 px-4 py-6 overflow-y-auto">
+        {/* Navigation Menu (Buttons) */}
+        <nav className="flex-1 px-4 py-6">
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 px-3">
             Main Menu
           </p>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -101,43 +85,23 @@ export const Sidebar = ({
               return (
                 <button
                   key={item.id}
-                  onClick={() => handleNavClick(item)}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  onClick={() => handleItemClick(item.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/25 font-semibold'
+                      ? 'bg-orange-500 text-white hover:bg-orange-600 shadow-md font-semibold'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <Icon className="w-5 h-5" />
-                    <span>{item.label}</span>
-                  </div>
-
-                  {item.badge !== null && (
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-bold ${
-                        isActive
-                          ? 'bg-white text-orange-600'
-                          : 'bg-orange-500/20 text-orange-400'
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
+                  <Icon className="w-5 h-5" />
+                  <span>{item.label}</span>
                 </button>
               );
             })}
           </div>
         </nav>
 
-        {/* Sidebar Footer */}
+        {/* Footer */}
         <div className="p-4 border-t border-slate-800">
-          <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50 mb-3 text-center">
-            <span className="text-[11px] text-slate-400 block">Active Source</span>
-            <span className="text-xs font-semibold text-orange-400">
-              DummyJSON Groceries API
-            </span>
-          </div>
           <p className="text-xs text-slate-400 text-center font-medium">
             © 2026 Meal Mall
           </p>

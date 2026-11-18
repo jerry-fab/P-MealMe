@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Star, ShieldCheck, Truck, RotateCcw, PackageCheck, User } from 'lucide-react';
 
-export const ProductDetailModal = ({ product, onClose, onToggleCart, isInCart }) => {
+export const ProductDetailModal = ({ product, onClose }) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -140,22 +140,13 @@ export const ProductDetailModal = ({ product, onClose, onToggleCart, isInCart })
             </div>
           )}
 
-          {/* Footer Actions */}
-          <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+          {/* Footer Action */}
+          <div className="pt-4 border-t border-slate-100 flex justify-end">
             <button
               onClick={onClose}
-              className="px-5 py-2.5 text-slate-600 hover:text-slate-900 font-semibold text-xs transition-colors"
+              className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-all"
             >
-              Close
-            </button>
-
-            <button
-              onClick={() => {
-                onToggleCart(product);
-              }}
-              className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-95"
-            >
-              {isInCart ? 'Remove from Cart' : 'Add to Cart'}
+              Done
             </button>
           </div>
 
