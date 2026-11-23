@@ -1,116 +1,53 @@
 import React from 'react';
 import { Star, Tag, Eye, Bookmark } from 'lucide-react';
 
-/**
- * Reusable MealCard component.
- * Displays image, rating, title, category, price, discount, stock, and action buttons.
- */
 export const MealCard = ({ product }) => {
-  const originalPrice = product.discountPercentage
-    ? (product.price / (1 - product.discountPercentage / 100)).toFixed(2)
-    : null;
-
-  const isLowStock = product.stock <= 10;
-
   return (
-    <article className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
-
-      {/* 1. Image Container with Floating Badges */}
-      <div className="relative aspect-[4/3] bg-slate-50 overflow-hidden flex items-center justify-center p-4">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all p-4 flex flex-col justify-between">
+      {/* 1. Image & Rating */}
+      <div className="relative aspect-[4/3] bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 mb-3">
         <img
           src={product.thumbnail || product.images?.[0]}
           alt={product.title}
-          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-          loading="lazy"
+          className="w-full h-full object-contain"
         />
-
-        {/* Floating Rating Badge */}
-        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm flex items-center gap-1 border border-slate-100">
+        <div className="absolute top-2 right-2 bg-white px-2 py-0.5 rounded-full text-xs font-bold text-slate-800 shadow flex items-center gap-1">
           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
           <span>{product.rating}</span>
         </div>
-
-        {/* Floating Discount Badge */}
-        {product.discountPercentage && (
-          <div className="absolute top-3 left-3 bg-rose-500 text-white px-2.5 py-0.5 rounded-full text-[11px] font-bold shadow-sm tracking-wide">
-            {Math.round(product.discountPercentage)}% OFF
-          </div>
-        )}
       </div>
 
-      {/* 2. Product Details */}
-      <div className="p-5 flex-1 flex flex-col justify-between">
-        <div>
-          {/* Category & Stock Badges */}
-          <div className="flex items-center gap-2 mb-2">
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-orange-50 text-orange-700 border border-orange-100 uppercase tracking-wider">
-              <Tag className="w-2.5 h-2.5" />
-              {product.tags?.[0] || product.category}
-            </span>
+      {/* 2. Details */}
+      <div className="flex-1">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-orange-50 text-orange-700 uppercase">
+          <Tag className="w-2.5 h-2.5" />
+          {product.category}
+        </span>
 
-            <span
-              className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${isLowStock
-                  ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                  : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                }`}
-            >
-              {isLowStock ? `Low Stock (${product.stock})` : product.availabilityStatus || 'In Stock'}
-            </span>
-          </div>
+        <h3 className="font-bold text-slate-900 text-base mt-1 truncate" title={product.title}>
+          {product.title}
+        </h3>
 
-          {/* Title */}
-          <h3
-            className="font-bold text-slate-900 text-lg leading-snug line-clamp-1 group-hover:text-orange-600 transition-colors"
-            title={product.title}
-          >
-            {product.title}
-          </h3>
+        <p className="text-slate-500 text-xs mt-1 line-clamp-2">
+          {product.description}
+        </p>
 
-          {/* Description */}
-          <p className="text-slate-500 text-xs mt-1.5 line-clamp-2 leading-relaxed">
-            {product.description}
-          </p>
-
-          {/* Price & Delivery Information */}
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-baseline justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-slate-900">
-                ${Number(product.price).toFixed(2)}
-              </span>
-              {originalPrice && (
-                <span className="text-xs text-slate-400 line-through">
-                  ${originalPrice}
-                </span>
-              )}
-            </div>
-
-            <span className="text-[11px] text-slate-400 font-medium">
-              {product.shippingInformation || 'Fast Delivery'}
-            </span>
-          </div>
+        <div className="text-xl font-bold text-slate-900 mt-3">
+          ${product.price}
         </div>
-
-        {/* 3. Action Buttons (Pure UI Buttons) */}
-        <div className="flex items-center gap-2.5 mt-5">
-          <button
-            type="button"
-            className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs py-2.5 px-3 rounded-xl transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-1.5"
-          >
-            <Eye className="w-3.5 h-3.5" />
-            <span>View Details</span>
-          </button>
-
-          <button
-            type="button"
-            className="flex-1 border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 active:scale-[0.98]"
-          >
-            <Bookmark className="w-3.5 h-3.5" />
-            <span>Save</span>
-          </button>
-        </div>
-
       </div>
 
-    </article>
+      {/* 3. Action Buttons */}
+      <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
+        <button className="flex-1 bg-slate-900 text-white font-medium text-xs py-2 rounded-lg flex items-center justify-center gap-1 hover:bg-slate-800">
+          <Eye className="w-3.5 h-3.5" />
+          <span>View Details</span>
+        </button>
+        <button className="flex-1 border border-slate-200 text-slate-700 text-xs py-2 rounded-lg flex items-center justify-center gap-1 hover:bg-slate-50">
+          <Bookmark className="w-3.5 h-3.5" />
+          <span>Save</span>
+        </button>
+      </div>
+    </div>
   );
 };

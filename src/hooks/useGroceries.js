@@ -1,34 +1,29 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const GROCERIES_API_URL = 'https://dummyjson.com/products/category/groceries';
+const API_URL = 'https://dummyjson.com/products/category/groceries';
 
 export const useGroceries = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchGroceries = useCallback(async (signal) => {
+  const fetchGroceries = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(GROCERIES_API_URL, { signal });
-      if (response.data?.products) {
-        setProducts(response.data.products);
-      }
+      const response = await axios.get(API_URL);
+      setProducts(response.data.products || []);
     } catch (err) {
-      if (axios.isCancel(err) || err.name === 'CanceledError') return;
-      setError(err.response?.data?.message || err.message || 'Failed to fetch items');
+      setError(err.message || 'Failed to fetch meals');
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    const controller = new AbortController();
-    fetchGroceries(controller.signal);
-    return () => controller.abort();
-  }, [fetchGroceries]);
+    fetchGroceries();
+  }, []);
 
-  return { products, loading, error, refetch: () => fetchGroceries() };
+  return { products, loading, error, refetch: fetchGroceries };
 };

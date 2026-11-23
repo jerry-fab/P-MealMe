@@ -18,9 +18,7 @@ export function App() {
       />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar
-          onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-        />
+        <Topbar onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)} />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
@@ -36,7 +34,7 @@ export function App() {
               <ErrorAlert message={error} onRetry={refetch} />
             )}
 
-            {!loading && !error && products.length > 0 && (
+            {!loading && !error && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.map((product) => (
                   <MealCard key={product.id} product={product} />
