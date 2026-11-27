@@ -18,28 +18,13 @@ export const Login = () => {
       {/* Auth Card Container */}
       <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         
-        {/* Left Side: Orange Marketing Banner */}
-        <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-8 sm:p-10 text-white flex flex-col justify-between min-h-[480px] relative overflow-hidden">
-          <div className="space-y-4 z-10">
-            <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight">
-              Simplify management with our{' '}
-              <span className="underline decoration-white/60 underline-offset-4">dashboard</span>.
-            </h2>
-            <p className="text-orange-100 text-sm leading-relaxed">
-              Simplify your e-commerce management with our user-friendly admin dashboard.
-            </p>
-          </div>
-
-          {/* 3D Character Illustration stored in assets */}
-          <div className="relative z-10 flex justify-center items-end mt-4">
-            <img
-              src={coverImage}
-              alt="Cover Characters"
-              className="h-60 sm:h-72 object-contain drop-shadow-2xl"
-            />
-          </div>
-
-          <div className="absolute -bottom-16 -right-16 w-56 h-56 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        {/* Left Side: Complete Orange Marketing Banner from PDF */}
+        <div className="rounded-3xl overflow-hidden min-h-[460px] md:h-full hidden md:flex items-center justify-center shadow-md bg-orange-500">
+          <img
+            src={coverImage}
+            alt="Simplify management with our dashboard"
+            className="w-full h-full object-cover rounded-3xl"
+          />
         </div>
 
         {/* Right Side: Form Section (No Validations) */}
