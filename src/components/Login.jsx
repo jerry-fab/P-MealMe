@@ -18,12 +18,37 @@ export const Login = () => {
       <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         
         {/* Left Side: Orange Marketing Banner */}
-        <div className="rounded-3xl overflow-hidden min-h-[460px] md:h-full hidden md:flex items-center justify-center shadow-md bg-orange-500">
+        <div className="relative rounded-3xl overflow-hidden min-h-[520px] md:h-full hidden md:flex flex-col justify-between p-8 sm:p-10 text-white shadow-md bg-[#fd7014]">
           <img
             src={coverImage}
             alt="Simplify management with our dashboard"
-            className="w-full h-full object-cover rounded-3xl"
+            className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none"
           />
+          <div className="relative z-10 max-w-xs space-y-3">
+            <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight text-white">
+              Simplify<br />
+              management with<br />
+              <span className="relative inline-block">
+                our dashboard.
+                <svg
+                  className="absolute -bottom-1.5 left-0 w-full"
+                  viewBox="0 0 100 8"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 5.5C30 1.5 70 1.5 98 5.5"
+                    stroke="white"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+            </h2>
+            <p className="text-orange-100/90 text-xs sm:text-[13px] leading-relaxed font-normal">
+              Simplify your e-commerce management with our user-friendly admin dashboard.
+            </p>
+          </div>
         </div>
 
         {/* Right Side: Form Section */}
