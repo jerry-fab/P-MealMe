@@ -25,19 +25,20 @@ export const Login = () => {
             className="absolute inset-0 w-full h-full object-cover object-bottom pointer-events-none"
           />
           <div className="relative z-10 max-w-xs space-y-3">
-            <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold leading-tight tracking-tight text-white">
               Simplify<br />
               management with<br />
               <span className="relative inline-block">
                 our dashboard.
                 <svg
-                  className="absolute -bottom-1.5 left-0 w-full"
-                  viewBox="0 0 100 8"
+                  className="absolute -bottom-2 left-0 w-full overflow-visible"
+                  height="10"
+                  viewBox="0 0 160 10"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M2 5.5C30 1.5 70 1.5 98 5.5"
+                    d="M2 7C40 2 120 2 158 7"
                     stroke="white"
                     strokeWidth="2.5"
                     strokeLinecap="round"
@@ -45,7 +46,7 @@ export const Login = () => {
                 </svg>
               </span>
             </h2>
-            <p className="text-orange-100/90 text-xs sm:text-[13px] leading-relaxed font-normal">
+            <p className="text-orange-100/90 text-xs sm:text-[13px] leading-relaxed font-normal max-w-[260px] sm:max-w-xs">
               Simplify your e-commerce management with our user-friendly admin dashboard.
             </p>
           </div>
