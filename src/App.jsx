@@ -1,50 +1,49 @@
-import React, { useState } from 'react';
-import { useGroceries } from './hooks/useGroceries';
-import { Sidebar } from './components/Sidebar';
-import { Topbar } from './components/Topbar';
-import { MealCard } from './components/MealCard';
-import { CardSkeleton } from './components/CardSkeleton';
-import { ErrorAlert } from './components/ErrorAlert';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Login } from './components/Login';
+import { Layout } from './components/Layout';
+import { MealList } from './components/MealList';
 
 export function App() {
-  const { products, loading, error, refetch } = useGroceries();
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
   return (
-    <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
-      <Sidebar
-        mobileOpen={mobileSidebarOpen}
-        setMobileOpen={setMobileSidebarOpen}
-      />
+    <BrowserRouter>
+      <Routes>
+        {/* Initially browsing the app loads the Login & Registration UI */}
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)} />
-
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-          <div className="max-w-7xl mx-auto">
-            {loading && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, idx) => (
-                  <CardSkeleton key={idx} />
-                ))}
+        {/* Dashboard Shell with Layout */}
+        <Route element={<Layout />}>
+          {/* /dashboard: Empty dashboard as requested */}
+          <Route
+            path="/dashboard"
+            element={
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400">
+                <h2 className="text-xl font-bold text-slate-700 mb-1">Dashboard</h2>
+                <p className="text-xs">Dashboard is currently empty</p>
               </div>
-            )}
+            }
+          />
 
-            {!loading && error && (
-              <ErrorAlert message={error} onRetry={refetch} />
-            )}
+          {/* /meal-list: Existing meal/groceries card grid */}
+          <Route path="/meal-list" element={<MealList />} />
 
-            {!loading && !error && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
-                  <MealCard key={product.id} product={product} />
-                ))}
+          {/* /create-meal: Empty page as requested */}
+          <Route
+            path="/create-meal"
+            element={
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400">
+                <h2 className="text-xl font-bold text-slate-700 mb-1">Create Meal</h2>
+                <p className="text-xs">Create Meal page is currently empty</p>
               </div>
-            )}
-          </div>
-        </main>
-      </div>
-    </div>
+            }
+          />
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

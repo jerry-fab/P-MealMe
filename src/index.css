@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-[#FAFAFA] text-gray-900 antialiased font-sans;
-  }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }

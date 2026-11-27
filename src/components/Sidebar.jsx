@@ -1,7 +1,16 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Utensils, CirclePlus, X, Store } from 'lucide-react';
 
 export const Sidebar = ({ mobileOpen, setMobileOpen }) => {
+  const location = useLocation();
+
+  const navItems = [
+    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { label: 'Meal Card', path: '/meal-list', icon: Utensils },
+    { label: 'Meal Create', path: '/create-meal', icon: CirclePlus },
+  ];
+
   return (
     <>
       {mobileOpen && (
@@ -30,18 +39,25 @@ export const Sidebar = ({ mobileOpen, setMobileOpen }) => {
 
         <nav className="flex-1 p-4 space-y-2">
           <p className="text-xs font-semibold text-slate-400 uppercase px-3">Main Menu</p>
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-800">
-            <LayoutDashboard className="w-4 h-4" />
-            <span>Dashboard</span>
-          </button>
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold bg-orange-500 text-white">
-            <Utensils className="w-4 h-4" />
-            <span>Meal Card</span>
-          </button>
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-800">
-            <CirclePlus className="w-4 h-4" />
-            <span>Meal Create</span>
-          </button>
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileOpen(false)}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all ${
+                  isActive
+                    ? 'font-semibold bg-orange-500 text-white shadow-md'
+                    : 'text-slate-300 hover:bg-slate-800'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="p-4 border-t border-slate-800 text-xs text-slate-400 text-center">
