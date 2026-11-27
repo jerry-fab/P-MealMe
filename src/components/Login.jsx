@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Eye, EyeOff } from 'lucide-react';
 import coverImage from '../assets/cover-image.png';
@@ -15,10 +15,9 @@ export const Login = () => {
 
   return (
     <div className="min-h-screen bg-slate-200/60 flex items-center justify-center p-4 sm:p-6 font-sans">
-      {/* Auth Card Container */}
       <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         
-        {/* Left Side: Complete Orange Marketing Banner from PDF */}
+        {/* Left Side: Orange Marketing Banner */}
         <div className="rounded-3xl overflow-hidden min-h-[460px] md:h-full hidden md:flex items-center justify-center shadow-md bg-orange-500">
           <img
             src={coverImage}
@@ -27,9 +26,8 @@ export const Login = () => {
           />
         </div>
 
-        {/* Right Side: Form Section (No Validations) */}
+        {/* Right Side: Form Section */}
         <div className="p-2 sm:p-6 flex flex-col justify-center">
-          {/* Brand Logo */}
           <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center font-bold text-xs shadow-sm">
               <ShoppingCart className="w-4 h-4" />
@@ -39,7 +37,6 @@ export const Login = () => {
             </span>
           </div>
 
-          {/* Headings */}
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">
             {isSignup ? 'Create Account' : 'Welcome Back'}
           </h1>
@@ -47,7 +44,6 @@ export const Login = () => {
             {isSignup ? 'Please sign up for your account' : 'Please login to your account'}
           </p>
 
-          {/* Form */}
           <form noValidate onSubmit={handleSubmit} className="space-y-3.5">
             {isSignup && (
               <input
@@ -94,7 +90,6 @@ export const Login = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="relative my-5 text-center">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200" />
@@ -104,7 +99,6 @@ export const Login = () => {
             </span>
           </div>
 
-          {/* Social Logins */}
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -122,7 +116,6 @@ export const Login = () => {
             </button>
           </div>
 
-          {/* Toggle between Login and Signup */}
           <p className="text-center text-xs text-slate-400 mt-6">
             {isSignup ? 'Already have an account?' : "Don't have an account?"}{' '}
             <button

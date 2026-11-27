@@ -1,10 +1,8 @@
-import React from 'react';
 import { Star, Tag, Eye, Bookmark } from 'lucide-react';
 
 export const MealCard = ({ product }) => {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all p-4 flex flex-col justify-between">
-      {/* 1. Image & Rating */}
       <div className="relative aspect-[4/3] bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center p-2 mb-3">
         <img
           src={product.thumbnail || product.images?.[0]}
@@ -17,7 +15,6 @@ export const MealCard = ({ product }) => {
         </div>
       </div>
 
-      {/* 2. Details */}
       <div className="flex-1">
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-orange-50 text-orange-700 uppercase">
           <Tag className="w-2.5 h-2.5" />
@@ -37,7 +34,6 @@ export const MealCard = ({ product }) => {
         </div>
       </div>
 
-      {/* 3. Action Buttons */}
       <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
         <button className="flex-1 bg-slate-900 text-white font-medium text-xs py-2 rounded-lg flex items-center justify-center gap-1 hover:bg-slate-800">
           <Eye className="w-3.5 h-3.5" />

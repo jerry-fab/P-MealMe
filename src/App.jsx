@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './components/Login';
 import { Layout } from './components/Layout';
@@ -8,13 +7,10 @@ export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Initially browsing the app loads the Login & Registration UI */}
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Dashboard Shell with Layout */}
         <Route element={<Layout />}>
-          {/* /dashboard: Empty dashboard as requested */}
           <Route
             path="/dashboard"
             element={
@@ -24,11 +20,7 @@ export function App() {
               </div>
             }
           />
-
-          {/* /meal-list: Existing meal/groceries card grid */}
           <Route path="/meal-list" element={<MealList />} />
-
-          {/* /create-meal: Empty page as requested */}
           <Route
             path="/create-meal"
             element={
@@ -40,7 +32,6 @@ export function App() {
           />
         </Route>
 
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
