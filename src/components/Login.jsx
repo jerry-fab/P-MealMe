@@ -17,7 +17,7 @@ export const Login = () => {
       {/* Auth Card Container */}
       <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         
-        {/* Left Side: Orange Marketing Banner (matching PDF) */}
+        {/* Left Side: Orange Marketing Banner */}
         <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-8 sm:p-10 text-white flex flex-col justify-between min-h-[460px] relative overflow-hidden">
           <div className="space-y-4 z-10">
             <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight">
@@ -29,7 +29,6 @@ export const Login = () => {
             </p>
           </div>
 
-          {/* 3D Character Illustration Placeholder */}
           <div className="relative z-10 flex justify-center items-end mt-6">
             <img
               src="https://illustrations.popertee.com/characters/standing-confident.png"
@@ -44,7 +43,7 @@ export const Login = () => {
           <div className="absolute -bottom-16 -right-16 w-56 h-56 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         </div>
 
-        {/* Right Side: Form Section */}
+        {/* Right Side: Form Section (No Validations) */}
         <div className="p-2 sm:p-6 flex flex-col justify-center">
           {/* Brand Logo */}
           <div className="flex items-center gap-2 mb-6">
@@ -64,21 +63,19 @@ export const Login = () => {
             {isSignup ? 'Please sign up for your account' : 'Please login to your account'}
           </p>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3.5">
+          {/* Form without any validation restrictions */}
+          <form noValidate onSubmit={handleSubmit} className="space-y-3.5">
             {isSignup && (
               <input
                 type="text"
                 placeholder="Full Name"
-                required
                 className="w-full px-4 py-2.5 bg-slate-100 border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 outline-none focus:border-orange-500 focus:bg-white"
               />
             )}
 
             <input
-              type="email"
+              type="text"
               placeholder="Email address"
-              required
               className="w-full px-4 py-2.5 bg-slate-100 border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 outline-none focus:border-orange-500 focus:bg-white"
             />
 
@@ -86,7 +83,6 @@ export const Login = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
-                required
                 className="w-full px-4 py-2.5 bg-slate-100 border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 outline-none focus:border-orange-500 focus:bg-white pr-10"
               />
               <button
@@ -127,12 +123,14 @@ export const Login = () => {
           {/* Social Logins */}
           <div className="grid grid-cols-2 gap-3">
             <button
+              type="button"
               onClick={() => navigate('/dashboard')}
               className="flex items-center justify-center gap-2 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-all"
             >
               <span className="text-sm font-bold text-blue-600">G</span> Google
             </button>
             <button
+              type="button"
               onClick={() => navigate('/dashboard')}
               className="flex items-center justify-center gap-2 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-all"
             >
