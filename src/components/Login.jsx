@@ -59,7 +59,7 @@ export const Login = () => {
               <ShoppingCart className="w-4 h-4" />
             </div>
             <span className="font-bold text-base text-slate-800 tracking-tight">
-              E Spurt
+              Meal Mall
             </span>
           </div>
 
