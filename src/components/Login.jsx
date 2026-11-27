@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Eye, EyeOff } from 'lucide-react';
+import coverImage from '../assets/cover-image.png';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export const Login = () => {
       <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         
         {/* Left Side: Orange Marketing Banner */}
-        <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-8 sm:p-10 text-white flex flex-col justify-between min-h-[460px] relative overflow-hidden">
+        <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-8 sm:p-10 text-white flex flex-col justify-between min-h-[480px] relative overflow-hidden">
           <div className="space-y-4 z-10">
             <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight">
               Simplify management with our{' '}
@@ -29,14 +30,12 @@ export const Login = () => {
             </p>
           </div>
 
-          <div className="relative z-10 flex justify-center items-end mt-6">
+          {/* 3D Character Illustration stored in assets */}
+          <div className="relative z-10 flex justify-center items-end mt-4">
             <img
-              src="https://illustrations.popertee.com/characters/standing-confident.png"
-              alt="Characters"
-              className="h-44 object-contain drop-shadow-xl"
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
+              src={coverImage}
+              alt="Cover Characters"
+              className="h-60 sm:h-72 object-contain drop-shadow-2xl"
             />
           </div>
 
@@ -63,7 +62,7 @@ export const Login = () => {
             {isSignup ? 'Please sign up for your account' : 'Please login to your account'}
           </p>
 
-          {/* Form without any validation restrictions */}
+          {/* Form */}
           <form noValidate onSubmit={handleSubmit} className="space-y-3.5">
             {isSignup && (
               <input
